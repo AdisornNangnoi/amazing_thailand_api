@@ -1,35 +1,39 @@
-const express = require("express"); // call express module to create web server
-require("dotenv").config(); // call to use .env
-
+const express = require("express");
 const cors = require("cors");
-const travellerRoute = require("./routes/traveller.route"); // call to use router module
-const travelRoute = require("./routes/travel.route");
+const placeRoutes = require("./routes/place.route.js");
+const userRoutes = require("./routes/user.route.js");
+const commentRoutes = require("./routes/comment.route.js");
+require("dotenv").config();
 
-//++++++++++++++++++ CREATE WEB SERVER +++++++++++++++++++
-
-const app = express(); // create web server
-//Default is port 5000
+const app = express();
 const PORT = process.env.PORT || 5000;
 
-//Use middleware to various management++++++++++++++++++++++
-app.use(cors());//allow access from any domain
-app.use(express.json())
+app.use(cors());
+app.use(express.json()); // Parse incoming JSON
 
-//++++++++++++66++++ APP USE +++++++++++++++++++++++++++++++
+// Routes
+app.use("/place", placeRoutes);
+app.use("/user", userRoutes);
+app.use("/comment", commentRoutes);
 
-//use router module=================
-app.use("/traveller", travellerRoute); 
-app.use("/travel", travelRoute);
-//Access to image folder path================
-app.use("/images/traveller", express.static("images/traveller"));
-app.use("/images/travel", express.static("images/travel"));
+// Static files for images
+app.use("/images/user", express.static("images/user"));
+app.use("/images/place", express.static("images/place"));
 
-//++++++++++++++++ test call web server +++++++++++++++++++
+// Basic test route
 app.get("/", (req, res) => {
-  res.json({ message: "Hello from server port " + PORT + " by prisma" }); //send message
+  res.json({ message: "Hello from backend server!" });
 });
 
-//++++++++create web server connection from client/user++++++++++++
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res
+    .status(500)
+    .json({ message: "Something went wrong! Please try again later." });
+});
+
+// Start server
 app.listen(PORT, () => {
-  console.log("Server is running on port " + PORT);
+  console.log(`Server is running on port ${PORT}...`);
 });
