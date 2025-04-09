@@ -209,3 +209,14 @@ exports.deletePlace = async (req, res) => {
     res.status(500).json({ message: "Error: " + error.message });
   }
 };
+// Handle getting all places
+exports.getAllPlaces = async (req, res) => {
+  try {
+    const places = await prisma.places_tb.findMany(); // ไม่ต้องใส่ where เพราะจะดึงทั้งหมด
+    res.status(200).json({ message: "All places found", data: places });
+  } catch (error) {
+    console.error("Error fetching places: ", error);
+    res.status(500).json({ message: "Error: " + error.message });
+  }
+};
+
