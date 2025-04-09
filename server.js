@@ -10,18 +10,17 @@ const PORT = process.env.PORT || 5000;
 
 // CORS configuration
 const corsOptions = {
-  origin: 'http://tarasato.thddns.net:5173',  
+  origin: process.env.CLIENT_URL || 'http://tarasato.thddns.net:5173',  // Use environment variable for flexibility
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  allowedHeaders: 'Content-Type, Authorization, X-Requested-With', 
+  allowedHeaders: 'Content-Type, Authorization, X-Requested-With',  // Make sure this matches your front-end request headers
   credentials: true,
 };
 
-
 // Use CORS with options
-app.use(cors(corsOptions)); 
+app.use(cors(corsOptions));
 
 // Preflight request (OPTIONS)
-app.options('*', cors(corsOptions)); // Enable pre-flight for all routes
+app.options('*', cors(corsOptions));  // Enable pre-flight for all routes
 
 app.use(express.json());  // Parse incoming JSON
 
@@ -29,7 +28,6 @@ app.use(express.json());  // Parse incoming JSON
 app.use('/place', placeRoutes);
 app.use('/user', userRoutes);
 app.use('/comment', commentRoutes);
-
 
 // Static files for images
 app.use('/images/user', express.static('images/user'));
