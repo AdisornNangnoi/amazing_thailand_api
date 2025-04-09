@@ -134,6 +134,16 @@ exports.editPlace = async (req, res) => {
     });
   }
 };
+// Handle getting all places
+exports.getAllPlaces = async (req, res) => {
+  try {
+    const places = await prisma.places_tb.findMany(); // ดึงข้อมูลทั้งหมดโดยไม่มีการกรอง
+    res.status(200).json({ message: "All places found", data: places });
+  } catch (error) {
+    console.error("Error fetching places: ", error);
+    res.status(500).json({ message: "Error: " + error.message });
+  }
+};
 
 // Handle getting all places for a user
 exports.getAllPlacebyId = async (req, res) => {
@@ -198,25 +208,12 @@ exports.deletePlace = async (req, res) => {
       where: { placeId: Number(req.params.placeId) },
     });
 
-    res
-      .status(200)
-      .json({
-        message: "Place and image deleted successfully",
-        data: deletedPlace,
-      });
+    res.status(200).json({
+      message: "Place and image deleted successfully",
+      data: deletedPlace,
+    });
   } catch (error) {
     console.error("Error deleting place: ", error);
     res.status(500).json({ message: "Error: " + error.message });
   }
 };
-// Handle getting all places
-exports.getAllPlaces = async (req, res) => {
-  try {
-    const places = await prisma.places_tb.findMany(); // ดึงข้อมูลทั้งหมดโดยไม่มีการกรอง
-    res.status(200).json({ message: "All places found", data: places });
-  } catch (error) {
-    console.error("Error fetching places: ", error);
-    res.status(500).json({ message: "Error: " + error.message });
-  }
-};
-
