@@ -220,4 +220,3 @@ exports.getAllPlaces = async (req, res) => {
   }
 };
 
-
