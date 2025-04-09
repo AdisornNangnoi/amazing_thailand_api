@@ -1,50 +1,35 @@
-const express = require('express');
-const cors = require('cors');
-const placeRoutes = require('./routes/place.route.js');
-const userRoutes = require('./routes/user.route.js');
-const commentRoutes = require('./routes/comment.route.js');
-require('dotenv').config();
+const express = require("express"); // call express module to create web server
+require("dotenv").config(); // call to use .env
 
-const app = express();
+const cors = require("cors");
+const travellerRoute = require("./routes/traveller.route"); // call to use router module
+const travelRoute = require("./routes/travel.route");
+
+//++++++++++++++++++ CREATE WEB SERVER +++++++++++++++++++
+
+const app = express(); // create web server
+//Default is port 5000
 const PORT = process.env.PORT || 5000;
 
-// CORS configuration
-const corsOptions = {
-  origin: process.env.CLIENT_URL || 'http://tarasato.thddns.net:5173',  // Use environment variable for flexibility
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  allowedHeaders: 'Content-Type, Authorization, X-Requested-With',  // Make sure this matches your front-end request headers
-  credentials: true,
-};
+//Use middleware to various management++++++++++++++++++++++
+app.use(cors());//allow access from any domain
+app.use(express.json())
 
-// Use CORS with options
-app.use(cors(corsOptions));
+//++++++++++++66++++ APP USE +++++++++++++++++++++++++++++++
 
-// Preflight request (OPTIONS)
-app.options('*', cors(corsOptions));  // Enable pre-flight for all routes
+//use router module=================
+app.use("/traveller", travellerRoute); 
+app.use("/travel", travelRoute);
+//Access to image folder path================
+app.use("/images/traveller", express.static("images/traveller"));
+app.use("/images/travel", express.static("images/travel"));
 
-app.use(express.json());  // Parse incoming JSON
-
-// Routes
-app.use('/place', placeRoutes);
-app.use('/user', userRoutes);
-app.use('/comment', commentRoutes);
-
-// Static files for images
-app.use('/images/user', express.static('images/user'));
-app.use('/images/place', express.static('images/place'));
-
-// Basic test route
-app.get('/', (req, res) => {
-  res.json({ message: 'Hello from backend server!' });
+//++++++++++++++++ test call web server +++++++++++++++++++
+app.get("/", (req, res) => {
+  res.json({ message: "Hello from server port " + PORT + " by prisma" }); //send message
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong! Please try again later.' });
-});
-
-// Start server
+//++++++++create web server connection from client/user++++++++++++
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}...`);
+  console.log("Server is running on port " + PORT);
 });
