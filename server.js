@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 5000;
 
 // CORS configuration
 const corsOptions = {
-  origin: 'http://localhost:4000',  // Modify with your frontend URL
+  origin: 'http://tarasato.thddns.net:5173/',  // Modify with your frontend URL
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
 };
