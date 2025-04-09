@@ -5,7 +5,7 @@ const router = express.Router();
 // Route definitions
 router.post("/", placeCtrl.uploadPlace, placeCtrl.createPlace);
 router.put("/:placeId", placeCtrl.uploadPlace, placeCtrl.editPlace);
-router.get("/:userId", placeCtrl.getAllPlacebyId);  // Ensure `getAllPlace` is a function in the controller
+router.get("/user/:userId", placeCtrl.getAllPlacebyId);  // Ensure `getAllPlace` is a function in the controller
 router.get("/one/:placeId", placeCtrl.getPlace);  // Ensure `getPlace` is a function in the controller
 router.get("/all", placeCtrl.getAllPlaces); // Ensure `getAllPlace` is a function in the controller
 router.delete("/:placeId", placeCtrl.deletePlace); // Ensure `deletePlace` is a function in the controller
