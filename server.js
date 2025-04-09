@@ -10,12 +10,18 @@ const PORT = process.env.PORT || 5000;
 
 // CORS configuration
 const corsOptions = {
-  origin: 'http://tarasato.thddns.net:5173',  // Modify with your frontend URL
+  origin: 'http://tarasato.thddns.net:5173',  // ชื่อ URL ที่ถูกต้อง
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true,
+  allowedHeaders: 'Content-Type,Authorization', // เพิ่ม allowed headers ถ้าจำเป็น
+  credentials: true,  // ระบุให้ส่งคุกกี้หรือการตรวจสอบ session ผ่าน CORS
 };
 
-app.use(cors(corsOptions));  // Use CORS with options
+// Use CORS with options
+app.use(cors(corsOptions)); 
+
+// Preflight request (OPTIONS)
+app.options('*', cors(corsOptions)); // Enable pre-flight for all routes
+
 app.use(express.json());  // Parse incoming JSON
 
 // Routes
