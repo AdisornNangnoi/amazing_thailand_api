@@ -136,7 +136,7 @@ exports.editPlace = async (req, res) => {
 };
 
 // Handle getting all places for a user
-exports.getAllPlace = async (req, res) => {
+exports.getAllPlacebyId = async (req, res) => {
   try {
     const places = await prisma.places_tb.findMany({
       where: { userId: Number(req.params.userId) },
