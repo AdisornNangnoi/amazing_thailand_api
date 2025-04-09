@@ -10,11 +10,12 @@ const PORT = process.env.PORT || 5000;
 
 // CORS configuration
 const corsOptions = {
-  origin: 'http://tarasato.thddns.net:5173',  // ชื่อ URL ที่ถูกต้อง
+  origin: 'http://tarasato.thddns.net:5173',  
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  allowedHeaders: 'Content-Type,Authorization', // เพิ่ม allowed headers ถ้าจำเป็น
-  credentials: true,  // ระบุให้ส่งคุกกี้หรือการตรวจสอบ session ผ่าน CORS
+  allowedHeaders: 'Content-Type, Authorization, X-Requested-With', 
+  credentials: true,
 };
+
 
 // Use CORS with options
 app.use(cors(corsOptions)); 
