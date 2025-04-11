@@ -56,7 +56,7 @@ exports.getAllUser = async (req, res) => {
       select: {
         userId: true,       // อาจจะต้องใช้ไว้สำหรับ join
         userName: true,
-        imageUrl: true,     // ฟิลด์รูปภาพของผู้ใช้
+        userImage: true,     // ฟิลด์รูปภาพของผู้ใช้
       },
     });
 
