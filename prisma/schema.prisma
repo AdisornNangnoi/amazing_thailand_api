@@ -19,13 +19,14 @@ model user_tb {
 }
 
 model places_tb {
-  placeId   Int           @id @default(autoincrement())
-  userId    Int
-  placeName  String        @db.VarChar(100)
-  placeImage  String?       @db.VarChar(255)
-  createdAt DateTime?     @default(now()) @db.DateTime(0)
-  comments  comments_tb[] @relation("PlaceComments")
-  user      user_tb       @relation("UserPlaces", fields: [userId], references: [userId], onDelete: Cascade, onUpdate: NoAction, map: "places_tb_ibfk_1")
+  placeId    Int          @id @default(autoincrement())
+  userId     Int
+  placeName  String       @db.VarChar(100)
+  placeImage String?      @db.VarChar(255)
+  createdAt  DateTime?    @default(now()) @db.DateTime(0)
+  comments   comments_tb[] @relation("PlaceComments")
+  
+  user       user_tb      @relation("UserPlaces", fields: [userId], references: [userId], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([userId], map: "userId")
 }
@@ -36,8 +37,8 @@ model comments_tb {
   userId      Int
   commentText String    @db.Text
   createdAt   DateTime? @default(now()) @db.DateTime(0)
-  place       places_tb @relation("PlaceComments", fields: [placeId], references: [placeId], onDelete: Cascade, onUpdate: NoAction, map: "comments_tb_ibfk_1")
-  user        user_tb   @relation("UserComments", fields: [userId], references: [userId], onDelete: Cascade, onUpdate: NoAction, map: "comments_tb_ibfk_2")
+  place       places_tb @relation("PlaceComments", fields: [placeId], references: [placeId], onDelete: Cascade, onUpdate: NoAction)
+  user        user_tb   @relation("UserComments", fields: [userId], references: [userId], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([placeId], map: "placeId")
   @@index([userId], map: "userId")
