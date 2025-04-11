@@ -28,9 +28,7 @@ const storage = new CloudinaryStorage({
 
 exports.uploadPlace = multer({
   storage: storage,
-  limits: {
-    fileSize: 1000000, // Limit file size to 1MB
-  },
+
   fileFilter: (req, file, cb) => {
     const fileTypes = /jpeg|jpg|png|gif/;
     const mimetype = fileTypes.test(file.mimetype);
