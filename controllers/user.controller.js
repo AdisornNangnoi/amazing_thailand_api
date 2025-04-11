@@ -77,23 +77,21 @@ exports.createUser = async (req, res) => {
 // Check Login for User
 exports.checkLogin = async (req, res) => {
   try {
-    //-----
     const result = await prisma.user_tb.findFirst({
       where: {
         userEmail: req.params.userEmail,
         userPassword: req.params.userPassword,
       },
     });
-    //-----
+
     if (result) {
       res.status(200).json({
-        message: "User login succesfully",
+        message: "User login successfully",
         data: result,
       });
     } else {
-      res.status(404).json({
-        message: "User login failed",
-        data: result,
+      res.status(401).json({
+        message: "Invalid email or password",
       });
     }
   } catch (error) {
@@ -102,6 +100,7 @@ exports.checkLogin = async (req, res) => {
     });
   }
 };
+
 
 // Edit User
 exports.editUser = async (req, res) => {
