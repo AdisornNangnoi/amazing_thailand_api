@@ -21,10 +21,10 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req, file) => {
-    const newFile = "user_"+Math.floor(Math.random() * Date.now()) // The name of the folder in Cloudinary
+    const newFile = "user_" + Math.floor(Math.random() * Date.now()); // The name of the folder in Cloudinary
 
     return {
-      folder : "images/user", // The name of the folder in Cloudinary
+      folder: "images/user", // The name of the folder in Cloudinary
       allowed_formats: ["jpg", "png", "jpeg", "gif"], // Allowed formats
       public_id: newFile, // The name of the file in Cloudinary
     };
@@ -50,9 +50,6 @@ exports.uploadUser = multer({
 //---------------------------------------------
 // Create User
 
-
-
-
 exports.createUser = async (req, res) => {
   try {
     //-----
@@ -61,10 +58,8 @@ exports.createUser = async (req, res) => {
         userName: req.body.userName,
         userEmail: req.body.userEmail,
         userPassword: req.body.userPassword,
-        
-        userImage: req.file
-          ? req.file.path.replace("images\\user\\", "")
-          : "",
+
+        userImage: req.file ? req.file.path.replace("images\\user\\", "") : "",
       },
     });
     //-----
@@ -124,17 +119,22 @@ exports.editUser = async (req, res) => {
       // ตรวจสอบว่ามีรูปไหม
       if (user.userImage) {
         // ลบรูปเก่าออกจาก Cloudinary
-        const oldPublicId = user.userImage.split('/').pop().split('.')[0]; // เอา public_id ของรูปเก่า
-        await cloudinary.uploader.destroy(`images/user/${oldPublicId}`, (err, result) => {
-          if (err) {
-            console.log("Error deleting old image: ", err);
-          } else {
-            console.log("Old image deleted successfully: ", result);
+        const oldPublicId = user.userImage.split("/").pop().split(".")[0]; // เอา public_id ของรูปเก่า
+        await cloudinary.uploader.destroy(
+          `images/user/${oldPublicId}`,
+          (err, result) => {
+            if (err) {
+              console.log("Error deleting old image: ", err);
+            } else {
+              console.log("Old image deleted successfully: ", result);
+            }
           }
-        });
+        );
       }
 
-      // แก้ไขข้อมูลผู้ใช้
+      // อัปเดตรูปใหม่ใน Cloudinary
+      const uploadedImage = req.file.path; // ได้ URL ของไฟล์ใหม่
+
       result = await prisma.user_tb.update({
         where: {
           userId: Number(req.params.userId),
@@ -143,7 +143,7 @@ exports.editUser = async (req, res) => {
           userName: req.body.userName,
           userEmail: req.body.userEmail,
           userPassword: req.body.userPassword,
-          userImage: req.file.path.replace("images/user/", ""), // อัปเดตรูปใหม่
+          userImage: uploadedImage.replace("images/user/", ""), // อัปเดตรูปใหม่
         },
       });
     } else {
@@ -159,11 +159,9 @@ exports.editUser = async (req, res) => {
         },
       });
     }
-
     //---------------------------------------------
     res.status(200).json({ message: "Edit successfully!", data: result });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
