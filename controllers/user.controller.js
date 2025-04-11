@@ -50,6 +50,28 @@ exports.uploadUser = multer({
 //---------------------------------------------
 // Create User
 
+exports.getAllUser = async (req, res) => {
+  try {
+    const result = await prisma.user_tb.findMany({
+      select: {
+        userId: true,       // อาจจะต้องใช้ไว้สำหรับ join
+        userName: true,
+        imageUrl: true,     // ฟิลด์รูปภาพของผู้ใช้
+      },
+    });
+
+    res.status(200).json({
+      message: "User found successfully",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+
 exports.createUser = async (req, res) => {
   try {
     //-----

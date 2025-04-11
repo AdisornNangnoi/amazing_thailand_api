@@ -9,6 +9,8 @@ router.post("/", userCtrl.uploadUser, userCtrl.createUser); //create user
 
 router.get("/:userEmail/:userPassword", userCtrl.checkLogin); //check login for user
 
+router.get("/all", userCtrl.getAllUser); //get all user
+
 router.put("/:userId", userCtrl.uploadUser, userCtrl.editUser); //edit user
 
 module.exports = router;
