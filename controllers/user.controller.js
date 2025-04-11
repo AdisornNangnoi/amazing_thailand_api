@@ -107,34 +107,40 @@ exports.checkLogin = async (req, res) => {
 exports.editUser = async (req, res) => {
   try {
     let result = {};
-    //---------------------------------------------
+
+    // ตรวจสอบว่ามีไฟล์ใหม่หรือไม่
     if (req.file) {
-      // ค้นดูว่ามีรูปไหม ถ้ามีให้ลบรูปเก่าออกจาก Cloudinary
+      // ค้นหาผู้ใช้ในฐานข้อมูล
       const user = await prisma.user_tb.findFirst({
         where: {
           userId: Number(req.params.userId),
         },
       });
 
-      // ตรวจสอบว่ามีรูปไหม
-      if (user.userImage) {
-        // ลบรูปเก่าออกจาก Cloudinary
+      // ตรวจสอบว่ามีรูปเก่าอยู่ในฐานข้อมูลหรือไม่
+      if (user && user.userImage) {
         const oldPublicId = user.userImage.split("/").pop().split(".")[0]; // เอา public_id ของรูปเก่า
-        await cloudinary.uploader.destroy(
-          `images/user/${oldPublicId}`,
-          (err, result) => {
-            if (err) {
-              console.log("Error deleting old image: ", err);
-            } else {
-              console.log("Old image deleted successfully: ", result);
-            }
+
+        if (oldPublicId) {
+          try {
+            // ลบรูปเก่าออกจาก Cloudinary
+            await cloudinary.uploader.destroy(`images/user/${oldPublicId}`);
+            console.log("Old image deleted successfully");
+          } catch (err) {
+            console.log("Error deleting old image: ", err);
+            return res.status(500).json({
+              message: "Error deleting old image from Cloudinary",
+            });
           }
-        );
+        }
       }
 
-      // อัปเดตรูปใหม่ใน Cloudinary
-      const uploadedImage = req.file.path; // ได้ URL ของไฟล์ใหม่
+      // อัปโหลดรูปใหม่ใน Cloudinary
+      const uploadedImage = req.file.path
+        .replace("images/user/", "")
+        .replace("\\", "/");
 
+      // อัปเดตข้อมูลผู้ใช้ในฐานข้อมูล
       result = await prisma.user_tb.update({
         where: {
           userId: Number(req.params.userId),
@@ -143,11 +149,11 @@ exports.editUser = async (req, res) => {
           userName: req.body.userName,
           userEmail: req.body.userEmail,
           userPassword: req.body.userPassword,
-          userImage: uploadedImage.replace("images/user/", ""), // อัปเดตรูปใหม่
+          userImage: uploadedImage, // อัปเดตรูปใหม่
         },
       });
     } else {
-      // แก้ไขข้อมูลผู้ใช้โดยไม่เปลี่ยนรูป
+      // หากไม่มีไฟล์ใหม่, อัปเดตข้อมูลผู้ใช้โดยไม่เปลี่ยนรูป
       result = await prisma.user_tb.update({
         where: {
           userId: Number(req.params.userId),
@@ -159,7 +165,7 @@ exports.editUser = async (req, res) => {
         },
       });
     }
-    //---------------------------------------------
+
     res.status(200).json({ message: "Edit successfully!", data: result });
   } catch (error) {
     res.status(500).json({ message: error.message });
