@@ -136,12 +136,9 @@ exports.editUser = async (req, res) => {
       }
 
       // อัปโหลดรูปใหม่ใน Cloudinary
-      const uploadedImage = await cloudinary.uploader.upload(req.file.path, {
-        folder: "images/user", // ระบุโฟลเดอร์
-      });
-
-      // บันทึก public_id ในฐานข้อมูล
-      const uploadedImagePath = uploadedImage.public_id; // บันทึกเป็น public_id ในฐานข้อมูล
+      const uploadedImage = req.file.path
+        .replace("images//user//", "")
+        .replace("\\", "/");
 
       // อัปเดตข้อมูลผู้ใช้ในฐานข้อมูล
       result = await prisma.user_tb.update({
@@ -152,7 +149,7 @@ exports.editUser = async (req, res) => {
           userName: req.body.userName,
           userEmail: req.body.userEmail,
           userPassword: req.body.userPassword,
-          userImage: uploadedImagePath, // บันทึก public_id
+          userImage: uploadedImage, // อัปเดตรูปใหม่
         },
       });
     } else {
