@@ -137,7 +137,7 @@ exports.editUser = async (req, res) => {
 
       // อัปโหลดรูปใหม่ใน Cloudinary
       const uploadedImage = req.file.path
-        .replace("images//user//", "")
+        .replace("images\\user\\", "") // แก้ไข path ที่จะถูกแทนที่
         .replace("\\", "/");
 
       // อัปเดตข้อมูลผู้ใช้ในฐานข้อมูล
