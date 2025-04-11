@@ -161,13 +161,30 @@ exports.getPlace = async (req, res) => {
   try {
     const place = await prisma.places_tb.findUnique({
       where: { placeId: Number(req.params.placeId) },
+      include: {
+        user_tb: {
+          // รวมข้อมูลจากตาราง user_tb
+          select: {
+            userName: true, // เลือกชื่อผู้โพสต์
+            userImage: true, // เลือกรูปภาพของผู้โพสต์
+          },
+        },
+      },
     });
+
     if (!place) {
       return res.status(404).json({ message: "Place not found" });
     }
-    res.status(200).json({ message: "Place found", data: place });
+
+    res.status(200).json({
+      message: "Place found",
+      data: {
+        place,
+        user: place.user_tb, // ส่งข้อมูลผู้โพสต์ไปพร้อมกับสถานที่
+      },
+    });
   } catch (error) {
-    console.error("Error fetching place: ", error); // เพิ่มการ log ข้อผิดพลาด
+    console.error("Error fetching place: ", error);
     res.status(500).json({ message: "Error: " + error.message });
   }
 };
