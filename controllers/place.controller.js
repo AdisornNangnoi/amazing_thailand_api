@@ -162,7 +162,7 @@ exports.getPlace = async (req, res) => {
     const place = await prisma.places_tb.findUnique({
       where: { placeId: Number(req.params.placeId) },
       include: {
-        user_tb: {
+        user: {
           // รวมข้อมูลจากตาราง user_tb
           select: {
             userName: true, // เลือกชื่อผู้โพสต์
