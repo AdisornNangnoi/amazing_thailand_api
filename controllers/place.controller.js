@@ -180,7 +180,7 @@ exports.getPlace = async (req, res) => {
       message: "Place found",
       data: {
         place,
-        user: place.user_tb, // ส่งข้อมูลผู้โพสต์ไปพร้อมกับสถานที่
+        user: place.user, // ส่งข้อมูลผู้โพสต์ไปพร้อมกับสถานที่
       },
     });
   } catch (error) {
@@ -189,7 +189,6 @@ exports.getPlace = async (req, res) => {
   }
 };
 
-// Handle deleting a place
 // Handle deleting a place
 exports.deletePlace = async (req, res) => {
   try {
